@@ -86,7 +86,7 @@ impl<T: Transport> Traces<T> {
     /// Returns traces created at given block
     pub fn block(&self, block: BlockNumber) -> CallFuture<Vec<Trace>, T::Out> {
         let block = helpers::serialize(&block);
-        CallFuture::new(self.transport.execute("trace_block", vec![block]))
+        CallFuture::new(self.transport.execute("debug_traceBlockByNumber", vec![block]))
     }
 
     /// Return traces matching the given filter
