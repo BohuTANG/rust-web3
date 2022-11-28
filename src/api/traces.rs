@@ -4,6 +4,7 @@ use crate::{
     types::{BlockId, BlockNumber, BlockTrace, Bytes, CallRequest, Index, Trace, TraceFilter, TraceType, H256},
     Transport,
 };
+use std::collections::HashMap;
 
 /// `Trace` namespace
 #[derive(Debug, Clone)]
@@ -86,7 +87,10 @@ impl<T: Transport> Traces<T> {
     /// Returns traces created at given block
     pub fn block(&self, block: BlockNumber) -> CallFuture<Vec<Trace>, T::Out> {
         let block = helpers::serialize(&block);
-        CallFuture::new(self.transport.execute("debug_traceBlockByNumber", vec![block]))
+        let mut map = HashMap::new();
+        map.insert("tracer".to_string(), "callTracer".to_string());
+        let tracer = helpers::serialize(&map);
+        CallFuture::new(self.transport.execute("debug_traceBlockByNumber", vec![block, tracer]))
     }
 
     /// Return traces matching the given filter
